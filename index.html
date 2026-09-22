@@ -1,0 +1,855 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Zoro - Free Online Games</title>
+  <meta name="description" content="Zoro पर मुफ्त ऑनलाइन गेम खेलें। Snake Game और अन्य मजेदार गेम खेलें।">
+  <meta name="keywords" content="Zoro games, free online games, snake game, browser games">
+  <meta name="author" content="Zoro">
+
+  <!-- Website Logo / Favicon -->
+  <link rel="icon" type="image/png" href="image/logo.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --green: #00a86b;
+      --dark-green: #078354;
+      --text: #20252b;
+      --muted: #68717b;
+      --page: #f4f6f8;
+      --white: #ffffff;
+      --line: #e5e9ee;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--page);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5%;
+      background: var(--white);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 30px;
+      font-weight: 900;
+    }
+
+    .brand > span > span {
+      color: var(--green);
+    }
+
+    /* LOGO */
+
+    .logo {
+      width: 45px;
+      height: 45px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid #e5f7ef;
+      background: white;
+      display: block;
+    }
+
+    nav {
+      display: flex;
+      gap: 25px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #39424b;
+      font-size: 15px;
+      font-weight: bold;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: var(--green);
+    }
+
+    .menu-btn {
+      display: none;
+      border: 0;
+      background: #eef8f3;
+      color: var(--dark-green);
+      border-radius: 10px;
+      padding: 10px 13px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    /* MOBILE MENU */
+
+    .mobile-menu {
+      display: none;
+      background: white;
+      padding: 15px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .mobile-menu a {
+      display: block;
+      padding: 12px 0;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: bold;
+    }
+
+    .mobile-menu.show {
+      display: block;
+    }
+
+    /* HERO */
+
+    .hero {
+      text-align: center;
+      padding: 60px 20px 45px;
+      background: linear-gradient(
+        180deg,
+        #e9fff5 0%,
+        #f4f6f8 100%
+      );
+    }
+
+    .hero h1 {
+      font-size: clamp(35px, 5vw, 65px);
+      line-height: 1.1;
+      margin-bottom: 15px;
+      letter-spacing: -2px;
+    }
+
+    .hero h1 span {
+      color: var(--green);
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 17px;
+      margin-bottom: 28px;
+    }
+
+    /* SEARCH */
+
+    .search-box {
+      max-width: 650px;
+      margin: auto;
+      display: flex;
+      gap: 6px;
+      padding: 6px;
+      background: white;
+      border: 1px solid #dce3e8;
+      border-radius: 17px;
+      box-shadow: 0 8px 25px rgba(26, 42, 54, 0.08);
+    }
+
+    .search-box input {
+      flex: 1;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      padding: 14px 16px;
+      font-size: 15px;
+      background: transparent;
+    }
+
+    .search-box button {
+      border: 0;
+      border-radius: 12px;
+      padding: 0 25px;
+      background: var(--green);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .search-box button:hover {
+      background: var(--dark-green);
+    }
+
+    /* CONTENT */
+
+    .content {
+      max-width: 1250px;
+      margin: auto;
+      padding: 30px 20px 50px;
+    }
+
+    .ad {
+      max-width: 1000px;
+      min-height: 84px;
+      margin: 0 auto 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed #cbd5dc;
+      border-radius: 16px;
+      color: #98a2ab;
+      background: white;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .section-head h2 {
+      font-size: 25px;
+    }
+
+    .section-head a {
+      text-decoration: none;
+      color: var(--dark-green);
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    /* GAME CARDS */
+
+    .games {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .game-card {
+      display: block;
+      overflow: hidden;
+      text-decoration: none;
+      color: var(--text);
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 4px 15px rgba(26, 42, 54, 0.045);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .game-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 28px rgba(26, 42, 54, 0.12);
+    }
+
+    .game-image {
+      height: 165px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 76px;
+      background: linear-gradient(135deg, #dff8ed, #edf3ff);
+    }
+
+    .game-info {
+      padding: 15px;
+    }
+
+    .game-info h3 {
+      font-size: 18px;
+      margin-bottom: 7px;
+    }
+
+    .game-info p {
+      font-size: 13px;
+      color: var(--muted);
+      min-height: 32px;
+    }
+
+    .play {
+      display: inline-block;
+      margin-top: 13px;
+      padding: 9px 14px;
+      border-radius: 10px;
+      background: var(--green);
+      color: white;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    /* CATEGORIES */
+
+    .categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .category {
+      border: 1px solid #d7e2dc;
+      background: white;
+      color: #40504a;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .category:hover,
+    .category.active {
+      background: var(--green);
+      border-color: var(--green);
+      color: white;
+    }
+
+    /* FOOTER */
+
+    footer {
+      padding: 32px 20px;
+      text-align: center;
+      background: white;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    footer strong {
+      color: var(--dark-green);
+    }
+
+    /* TABLET */
+
+    @media (max-width: 900px) {
+      .games {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 650px) {
+      .topbar {
+        height: 64px;
+        padding: 0 15px;
+      }
+
+      nav {
+        display: none;
+      }
+
+      .menu-btn {
+        display: block;
+      }
+
+      .brand {
+        font-size: 25px;
+      }
+
+      .logo {
+        width: 40px;
+        height: 40px;
+      }
+
+      .hero {
+        padding: 40px 15px 30px;
+      }
+
+      .hero h1 {
+        letter-spacing: -1px;
+      }
+
+      .hero p {
+        font-size: 15px;
+      }
+
+      .search-box {
+        border-radius: 13px;
+      }
+
+      .search-box button {
+        padding: 0 16px;
+      }
+
+      .content {
+        padding: 25px 14px 40px;
+      }
+
+      .games {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .game-image {
+        height: 125px;
+        font-size: 58px;
+      }
+
+      .game-info {
+        padding: 12px;
+      }
+
+      .game-info h3 {
+        font-size: 15px;
+      }
+
+      .game-info p {
+        font-size: 12px;
+      }
+
+      .play {
+        font-size: 12px;
+        padding: 8px 10px;
+      }
+
+      .section-head h2 {
+        font-size: 21px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+
+  <header class="topbar">
+
+    <a class="brand" href="index.html">
+
+      <!-- LOGO FILE: image/logo.png -->
+
+      <img
+        src="image/logo.png"
+        class="logo"
+        alt="Zoro Gaming Logo"
+        width="45"
+        height="45"
+      >
+
+      <span>
+        Zoro<span>.</span>
+      </span>
+
+    </a>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="#games">Games</a>
+      <a href="#categories">Categories</a>
+      <a href="#about">About</a>
+    </nav>
+
+    <button
+      class="menu-btn"
+      onclick="toggleMenu()"
+      aria-label="Open menu"
+      aria-expanded="false"
+    >
+      ☰
+    </button>
+
+  </header>
+
+  <!-- MOBILE MENU -->
+
+  <div class="mobile-menu" id="mobileMenu">
+
+    <a href="index.html">Home</a>
+    <a href="#games">Games</a>
+    <a href="#categories">Categories</a>
+    <a href="#about">About</a>
+
+  </div>
+
+  <!-- HERO -->
+
+  <section class="hero">
+
+    <h1>
+      Play <span>Free Games</span>
+    </h1>
+
+    <p>
+      अपना पसंदीदा गेम चुनें और तुरंत खेलना शुरू करें।
+    </p>
+
+    <!-- SEARCH -->
+
+    <div class="search-box">
+
+      <input
+        id="search"
+        type="text"
+        placeholder="गेम खोजें, जैसे Snake"
+        aria-label="Search games"
+      >
+
+      <button onclick="searchGame()">
+        Search
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- MAIN CONTENT -->
+
+  <main class="content">
+
+    <!-- ADVERTISEMENT -->
+
+    <div class="ad">
+      Advertisement
+    </div>
+
+    <!-- GAMES -->
+
+    <section id="games">
+
+      <div class="section-head">
+
+        <h2>🔥 Popular Games</h2>
+
+        <a href="#games">
+          View all →
+        </a>
+
+      </div>
+
+      <div class="games">
+
+        <!-- SNAKE GAME -->
+
+        <a
+          href="game.html"
+          class="game-card"
+          data-name="snake game arcade action"
+        >
+
+          <div class="game-image">
+            🐍🍎
+          </div>
+
+          <div class="game-info">
+
+            <h3>Snake Game</h3>
+
+            <p>
+              Classic snake game
+            </p>
+
+            <span class="play">
+              Play Now
+            </span>
+
+          </div>
+
+        </a>
+
+        <!-- PUZZLE GAME -->
+
+        <a
+          href="#"
+          class="game-card"
+          data-name="puzzle game puzzle"
+          onclick="comingSoon(event)"
+        >
+
+          <div class="game-image">
+            🧩
+          </div>
+
+          <div class="game-info">
+
+            <h3>Puzzle Game</h3>
+
+            <p>
+              Mind and logic challenge
+            </p>
+
+            <span class="play">
+              Coming Soon
+            </span>
+
+          </div>
+
+        </a>
+
+        <!-- SPACE GAME -->
+
+        <a
+          href="#"
+          class="game-card"
+          data-name="space game adventure action"
+          onclick="comingSoon(event)"
+        >
+
+          <div class="game-image">
+            🚀
+          </div>
+
+          <div class="game-info">
+
+            <h3>Space Game</h3>
+
+            <p>
+              Explore the galaxy
+            </p>
+
+            <span class="play">
+              Coming Soon
+            </span>
+
+          </div>
+
+        </a>
+
+        <!-- RACING GAME -->
+
+        <a
+          href="#"
+          class="game-card"
+          data-name="racing game racing"
+          onclick="comingSoon(event)"
+        >
+
+          <div class="game-image">
+            🏎️
+          </div>
+
+          <div class="game-info">
+
+            <h3>Racing Game</h3>
+
+            <p>
+              Fast racing action
+            </p>
+
+            <span class="play">
+              Coming Soon
+            </span>
+
+          </div>
+
+        </a>
+
+      </div>
+
+    </section>
+
+    <!-- CATEGORIES -->
+
+    <section id="categories">
+
+      <div class="section-head">
+
+        <h2>🎮 Categories</h2>
+
+      </div>
+
+      <div class="categories">
+
+        <button
+          class="category active"
+          onclick="filterGames('all', this)"
+        >
+          All
+        </button>
+
+        <button
+          class="category"
+          onclick="filterGames('action', this)"
+        >
+          Action
+        </button>
+
+        <button
+          class="category"
+          onclick="filterGames('arcade', this)"
+        >
+          Arcade
+        </button>
+
+        <button
+          class="category"
+          onclick="filterGames('puzzle', this)"
+        >
+          Puzzle
+        </button>
+
+        <button
+          class="category"
+          onclick="filterGames('racing', this)"
+        >
+          Racing
+        </button>
+
+        <button
+          class="category"
+          onclick="filterGames('adventure', this)"
+        >
+          Adventure
+        </button>
+
+      </div>
+
+    </section>
+
+    <!-- SECOND ADVERTISEMENT -->
+
+    <div class="ad">
+      Advertisement
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+
+  <footer id="about">
+
+    <p>
+      <strong>Zoro</strong> — Free online games.
+    </p>
+
+    <br>
+
+    <p>
+      © 2026 Zoro. All rights reserved.
+    </p>
+
+  </footer>
+
+  <!-- JAVASCRIPT -->
+
+  <script>
+
+    // MOBILE MENU
+
+    function toggleMenu() {
+
+      const menu = document.getElementById("mobileMenu");
+      const button = document.querySelector(".menu-btn");
+
+      menu.classList.toggle("show");
+
+      const isOpen = menu.classList.contains("show");
+
+      button.setAttribute("aria-expanded", isOpen);
+
+    }
+
+    // SEARCH GAME
+
+    function searchGame() {
+
+      const input = document.getElementById("search");
+
+      const value = input.value.toLowerCase().trim();
+
+      if (!value) {
+
+        alert("कृपया गेम का नाम लिखें।");
+
+        input.focus();
+
+        return;
+
+      }
+
+      if (value.includes("snake")) {
+
+        window.location.href = "game.html";
+
+      } else {
+
+        alert("यह गेम अभी उपलब्ध नहीं है।");
+
+      }
+
+    }
+
+    // ENTER KEY SEARCH
+
+    document
+      .getElementById("search")
+      .addEventListener("keydown", function(e) {
+
+        if (e.key === "Enter") {
+
+          searchGame();
+
+        }
+
+      });
+
+    // COMING SOON
+
+    function comingSoon(e) {
+
+      e.preventDefault();
+
+      alert("यह गेम जल्द आएगा!");
+
+    }
+
+    // FILTER GAMES
+
+    function filterGames(type, button) {
+
+      document
+        .querySelectorAll(".category")
+        .forEach(item => {
+
+          item.classList.remove("active");
+
+        });
+
+      button.classList.add("active");
+
+      document
+        .querySelectorAll(".game-card")
+        .forEach(card => {
+
+          const name = card.dataset.name || "";
+
+          if (
+            type === "all" ||
+            name.includes(type)
+          ) {
+
+            card.style.display = "block";
+
+          } else {
+
+            card.style.display = "none";
+
+          }
+
+        });
+
+    }
+
+  </script>
+
+</body>
+</html>
