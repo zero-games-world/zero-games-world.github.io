@@ -1,1395 +1,937 @@
-
 <!DOCTYPE html>
-<html lang="hi">
-
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>🐍 Zoro Snake Game</title>
-
-<style>
-
-/* ================= RESET ================= */
-
-* {
-    box-sizing: border-box;
-}
-
-html,
-body {
-    margin: 0;
-    padding: 0;
-    min-height: 100%;
-}
-
-/* ================= BODY ================= */
-
-body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    color: #5c609c;
-    background: #172033;
-}
-
-/* ================= PAGE LAYOUT ================= */
-
-.page-layout {
-    display: grid;
-
-    grid-template-columns:
-        minmax(0, 1fr)
-        70px
-        minmax(0, 850px)
-        70px
-        minmax(0, 1fr);
-
-    gap: 0;
-
-    width: 100%;
-    max-width: none;
-    min-height: 100vh;
-
-    margin: 0;
-    padding: 0;
-
-    align-items: stretch;
-}
-
-/* ================= SIDE ADS ================= */
-
-/* # GOOGLE ADS CODE HERE
-   Google AdSense code can be placed
-   inside the side-ad areas in future.
-*/
-
-.side-ad {
-    width: 100%;
-    min-height: 100vh;
-
-    background: #172033;
-
-    border: none;
-    border-radius: 0;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    color: #93b5d8;
-    font-size: 14px;
-
-    padding: 10px;
-
-    text-align: center;
-}
-
-/* ================= GAME RAIL ================= */
-
-/* RED BACKGROUND REMOVED
-   DARK BLUE BACKGROUND KEPT
-*/
-
-.game-rail {
-    width: 100%;
-    min-height: 100vh;
-
-    background: #172033;
-
-    display: flex;
-    flex-direction: column;
-
-    justify-content: center;
-    align-items: center;
-
-    gap: 14px;
-
-    padding: 10px 5px;
-}
-
-/* ================= OTHER GAME LINKS ================= */
-
-.other-game {
-    display: flex;
-
-    width: 58px;
-    height: 58px;
-
-    justify-content: center;
-    align-items: center;
-
-    text-decoration: none;
-
-    background: #172033;
-
-    border: 1px solid #44506a;
-    border-radius: 12px;
-
-    color: white;
-
-    font-size: 24px;
-
-    transition: 0.2s;
-}
-
-.other-game:hover {
-    background: #263652;
-    transform: scale(1.08);
-}
-
-.other-game:active {
-    transform: scale(0.96);
-}
-
-/* ================= GAME CENTER ================= */
-
-.game {
-    width: 100%;
-    min-width: 0;
-    min-height: 100vh;
-
-    padding: 18px 10px;
-
-    background: #dceeff;
-
-    text-align: center;
-}
-
-/* ================= TITLE ================= */
-
-h1 {
-    margin: 5px 0 10px;
-    font-size: clamp(24px, 4vw, 38px);
-}
-
-/* ================= SCORE ================= */
-
-.score {
-    font-size: 19px;
-    margin-bottom: 10px;
-}
-
-/* ================= SPEED ================= */
-
-.speed {
-    margin-bottom: 12px;
-}
-
-.speed button {
-    padding: 7px 12px;
-    margin: 3px;
-
-    border: 0;
-    border-radius: 7px;
-
-    background: white;
-    color: #111;
-
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.speed button.active {
-    background: #17324d;
-    color: white;
-}
-
-/* ================= CANVAS ================= */
-
-canvas {
-    display: block;
-
-    width: min(90vw, 500px);
-    height: auto;
-
-    max-width: 100%;
-    aspect-ratio: 1 / 1;
-
-    margin: 0 auto;
-
-    background: #f8fbff;
-
-    border: 3px solid #17324d;
-    border-radius: 10px;
-
-    box-sizing: border-box;
-}
-
-/* ================= MESSAGE ================= */
-
-#message {
-    margin: 12px;
-
-    font-size: 17px;
-    min-height: 22px;
-}
-
-/* ================= BUTTONS ================= */
-
-.main-btn {
-    padding: 10px 18px;
-    margin: 5px;
-
-    font-size: 16px;
-
-    border: 0;
-    border-radius: 8px;
-
-    cursor: pointer;
-
-    background: white;
-    color: #17324d;
-}
-
-.main-btn:hover {
-    opacity: 0.85;
-}
-
-.main-btn:active {
-    transform: scale(0.97);
-}
-
-.main-btn:focus-visible,
-.speed button:focus-visible,
-.control-btn:focus-visible,
-.other-game:focus-visible {
-    outline: 3px solid #248cff;
-    outline-offset: 2px;
-}
-
-/* ================= CONTROLS ================= */
-
-.controls {
-    width: 190px;
-    margin: 10px auto;
-
-    touch-action: manipulation;
-}
-
-.control-row {
-    display: flex;
-    justify-content: center;
-}
-
-.control-btn {
-    width: 55px;
-    height: 45px;
-
-    padding: 0;
-    margin: 2px;
-
-    font-size: 20px;
-
-    border: 0;
-    border-radius: 8px;
-
-    cursor: pointer;
-
-    background: white;
-    color: #17324d;
-
-    touch-action: manipulation;
-}
-
-.control-btn:active {
-    background: #c7d9eb;
-}
-
-/* ================= MOBILE ================= */
-
-@media (max-width: 1100px) {
-
-    .page-layout {
-        grid-template-columns:
-            minmax(0, 1fr)
-            60px
-            minmax(0, 850px)
-            60px
-            minmax(0, 1fr);
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9725246774545972"
+     crossorigin="anonymous"></script>
+
+  <meta name="google-adsense-account" content="ca-pub-9725246774545972">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#00a86b">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://zero-games-world.github.io/">
+
+  <!-- Search / Social Preview -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Plix Games - Free Online Games">
+  <meta property="og:description" content="Play free online games on Plix Games. Discover exciting browser games and play instantly.">
+  <meta property="og:url" content="https://zero-games-world.github.io/">
+  <meta property="og:site_name" content="Plix Games">
+  <meta property="og:image" content="https://zero-games-world.github.io/image/logo.png">
+  <meta property="og:image:alt" content="Plix Games Logo">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Plix Games - Free Online Games">
+  <meta name="twitter:description" content="Play free online games on Plix Games. Discover exciting browser games and play instantly.">
+  <meta name="twitter:image" content="https://zero-games-world.github.io/image/logo.png">
+
+  <title>Plix Games - Free Online Games</title>
+  <meta name="description" content="Play free online games on Plix Games. Enjoy Snake Game and other exciting browser games instantly.">
+  <meta name="keywords" content="Plix Games, free online games, browser games, snake game, online games">
+  <meta name="author" content="Plix Games">
+
+  <!-- Website Logo / Favicon -->
+  <link rel="icon" type="image/png" href="image/logo.png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    .other-game {
-        width: 48px;
-        height: 48px;
-        font-size: 20px;
+    :root {
+      --green: #00a86b;
+      --dark-green: #078354;
+      --text: #20252b;
+      --muted: #68717b;
+      --page: #f4f6f8;
+      --white: #ffffff;
+      --line: #e5e9ee;
     }
 
-}
-
-@media (max-width: 900px) {
-
-    .page-layout {
-        display: block;
-        min-height: 100vh;
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--page);
+      color: var(--text);
+      min-height: 100vh;
     }
 
-    .side-ad,
-    .game-rail {
+    /* HEADER */
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5%;
+      background: var(--white);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 30px;
+      font-weight: 900;
+    }
+
+    .brand > span > span {
+      color: var(--green);
+    }
+
+    /* LOGO */
+
+    .logo {
+      width: 45px;
+      height: 45px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid #e5f7ef;
+      background: white;
+      display: block;
+    }
+
+    nav {
+      display: flex;
+      gap: 25px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #39424b;
+      font-size: 15px;
+      font-weight: bold;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: var(--green);
+    }
+
+    .menu-btn {
+      display: none;
+      border: 0;
+      background: #eef8f3;
+      color: var(--dark-green);
+      border-radius: 10px;
+      padding: 10px 13px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    /* MOBILE MENU */
+
+    .mobile-menu {
+      display: none;
+      background: white;
+      padding: 15px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .mobile-menu a {
+      display: block;
+      padding: 12px 0;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: bold;
+    }
+
+    .mobile-menu.show {
+      display: block;
+    }
+
+    /* HERO */
+
+    .hero {
+      text-align: center;
+      padding: 60px 20px 45px;
+      background: linear-gradient(
+        180deg,
+        #e9fff5 0%,
+        #f4f6f8 100%
+      );
+    }
+
+    .hero h1 {
+      font-size: clamp(35px, 5vw, 65px);
+      line-height: 1.1;
+      margin-bottom: 15px;
+      letter-spacing: -2px;
+    }
+
+    .hero h1 span {
+      color: var(--green);
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 17px;
+      margin-bottom: 28px;
+    }
+
+    /* SEARCH */
+
+    .search-box {
+      max-width: 650px;
+      margin: auto;
+      display: flex;
+      gap: 6px;
+      padding: 6px;
+      background: white;
+      border: 1px solid #dce3e8;
+      border-radius: 17px;
+      box-shadow: 0 8px 25px rgba(26, 42, 54, 0.08);
+    }
+
+    .search-box input {
+      flex: 1;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      padding: 14px 16px;
+      font-size: 15px;
+      background: transparent;
+    }
+
+    .search-box button {
+      border: 0;
+      border-radius: 12px;
+      padding: 0 25px;
+      background: var(--green);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .search-box button:hover {
+      background: var(--dark-green);
+    }
+
+    /* CONTENT */
+
+    .content {
+      max-width: 1250px;
+      margin: auto;
+      padding: 30px 20px 50px;
+    }
+
+    .ad {
+      max-width: 1000px;
+      min-height: 84px;
+      margin: 0 auto 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed #cbd5dc;
+      border-radius: 16px;
+      color: #98a2ab;
+      background: white;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .section-head h2 {
+      font-size: 25px;
+    }
+
+    .section-head a {
+      text-decoration: none;
+      color: var(--dark-green);
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    /* GAME CARDS */
+
+    .games {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .game-card {
+      display: block;
+      overflow: hidden;
+      text-decoration: none;
+      color: var(--text);
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 4px 15px rgba(26, 42, 54, 0.045);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .game-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 28px rgba(26, 42, 54, 0.12);
+    }
+
+    .game-image {
+      height: 165px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 76px;
+      background: linear-gradient(135deg, #dff8ed, #edf3ff);
+    }
+
+    .game-info {
+      padding: 15px;
+    }
+
+    .game-info h3 {
+      font-size: 18px;
+      margin-bottom: 7px;
+    }
+
+    .game-info p {
+      font-size: 13px;
+      color: var(--muted);
+      min-height: 32px;
+    }
+
+    /* PLAYER LABEL */
+    .player-label {
+      display: inline-block;
+      margin-bottom: 8px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #eef8f3;
+      color: var(--dark-green);
+      font-size: 12px;
+      font-weight: 800;
+      border: 1px solid #d7eee3;
+    }
+
+    .game-status {
+      display: inline-block;
+      margin-top: 13px;
+      padding: 9px 14px;
+      border-radius: 10px;
+      background: #00a86b;
+      color: white;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    /* CATEGORIES */
+
+    .categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .category {
+      border: 1px solid #d7e2dc;
+      background: white;
+      color: #40504a;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .category:hover,
+    .category.active {
+      background: var(--green);
+      border-color: var(--green);
+      color: white;
+    }
+
+    /* FOOTER */
+
+    footer {
+      padding: 32px 20px;
+      text-align: center;
+      background: white;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    footer strong {
+      color: var(--dark-green);
+    }
+
+    @media (min-width: 901px) {
+      .games {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    /* TABLET */
+
+    @media (max-width: 900px) {
+      .games {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 650px) {
+      .topbar {
+        height: 64px;
+        padding: 0 15px;
+      }
+
+      nav {
         display: none;
-    }
+      }
 
-    .game {
-        width: 100%;
-        min-height: 100vh;
-        padding: 10px 5px;
-    }
+      .menu-btn {
+        display: block;
+      }
 
-    h1 {
+      .brand {
         font-size: 25px;
-    }
+      }
 
-    .score {
-        font-size: 17px;
-    }
+      .logo {
+        width: 40px;
+        height: 40px;
+      }
 
-}
+      .hero {
+        padding: 40px 15px 30px;
+      }
 
-/* ================= SMALL MOBILE ================= */
+      .hero h1 {
+        letter-spacing: -1px;
+      }
 
-@media (max-width: 400px) {
+      .hero p {
+        font-size: 15px;
+      }
 
-    .game {
-        padding: 5px 0;
-    }
+      .search-box {
+        border-radius: 13px;
+      }
 
-    h1 {
-        font-size: 22px;
-    }
+      .search-box button {
+        padding: 0 16px;
+      }
 
-    .speed button {
-        padding: 6px 9px;
+      .content {
+        padding: 25px 14px 40px;
+      }
+
+      .games {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .game-image {
+        height: 125px;
+        font-size: 58px;
+      }
+
+      .game-info {
+        padding: 12px;
+      }
+
+      .game-info h3 {
+        font-size: 15px;
+      }
+
+      .game-info p {
         font-size: 12px;
+      }
+
+      .section-head h2 {
+        font-size: 21px;
+      }
     }
-
-    .main-btn {
-        padding: 9px 14px;
-        font-size: 14px;
+  </style>
+  <!-- Structured data for search engines -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Plix Games",
+    "url": "https://zero-games-world.github.io/",
+    "description": "Free online browser games on Plix Games.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Plix Games",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://zero-games-world.github.io/image/logo.png"
+      }
     }
-
-    .control-btn {
-        width: 50px;
-        height: 42px;
-    }
-
-}
-
-/* ================= REDUCED MOTION ================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-    *,
-    *::before,
-    *::after {
-        scroll-behavior: auto;
-    }
-
-    .other-game {
-        transition: none;
-    }
-
-}
-
-</style>
+  }
+  </script>
 </head>
 
 <body>
 
-<!-- ================= PAGE START ================= -->
+  <!-- HEADER -->
 
-<div class="page-layout">
+  <header class="topbar">
 
-    <!-- ================= LEFT AD ================= -->
+    <a class="brand" href="index.html">
 
-    <!-- # GOOGLE ADS CODE HERE
-         Add Google AdSense code inside this area.
-    -->
+      <img
+        src="image/logo.png"
+        class="logo"
+        alt="Plix Games Logo"
+        width="45"
+        height="45"
+      >
 
-    <aside class="side-ad" aria-label="Advertisement">
-        Advertisement
-    </aside>
+      <span>
+        Plix Games<span>.</span>
+      </span>
 
-    <!-- ================= LEFT GAME RAIL ================= -->
+    </a>
 
-    <nav class="game-rail" aria-label="Other Games">
-
-        <a
-            class="other-game"
-            href="game1.html"
-            aria-label="Game 1"
-            title="Game 1">
-            🎮
-        </a>
-
-        <a
-            class="other-game"
-            href="game2.html"
-            aria-label="Game 2"
-            title="Game 2">
-            🕹️
-        </a>
-
-        <a
-            class="other-game"
-            href="game3.html"
-            aria-label="Game 3"
-            title="Game 3">
-            🚀
-        </a>
-
-        <a
-            class="other-game"
-            href="game4.html"
-            aria-label="Game 4"
-            title="Game 4">
-            🧩
-        </a>
-
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="#games">Games</a>
+      <a href="#categories">Categories</a>
+      <a href="#about">About</a>
     </nav>
 
-    <!-- ================= GAME CENTER ================= -->
+    <button
+      class="menu-btn"
+      onclick="toggleMenu()"
+      aria-label="Open menu"
+      aria-expanded="false"
+    >
+      ☰
+    </button>
 
-    <main class="game">
+  </header>
 
-        <h1>🐍 Snake Game 🍎</h1>
+  <!-- MOBILE MENU -->
 
-        <!-- SCORE -->
+  <div class="mobile-menu" id="mobileMenu">
 
-        <div class="score">
+    <a href="index.html">Home</a>
+    <a href="#games">Games</a>
+    <a href="#categories">Categories</a>
+    <a href="#about">About</a>
 
-            Score:
-            <span id="score">0</span>
+  </div>
 
-            &nbsp;&nbsp;
+  <!-- HERO -->
 
-            Best:
-            <span id="best">0</span>
+  <section class="hero">
 
-        </div>
+    <h1>
+      <span>Plix Games</span> - Free Online Games
+    </h1>
 
-        <!-- SPEED -->
+    <p>
+      Choose your favorite free online games on Plix Games and start playing instantly.
+    </p>
 
-        <div class="speed">
+    <!-- SEARCH -->
 
-            <b>Speed:</b>
+    <div class="search-box">
 
-            <button
-                id="slow"
-                type="button"
-                onclick="setSpeed(170)">
+      <input
+        id="search"
+        type="text"
+        placeholder="Search games, e.g. Snake"
+        aria-label="Search games"
+      >
 
-                🐢 Slow
+      <button onclick="searchGame()">
+        Search
+      </button>
 
-            </button>
+    </div>
 
-            <button
-                id="medium"
-                type="button"
-                onclick="setSpeed(110)">
+  </section>
 
-                ⚡ Medium
+  <!-- MAIN CONTENT -->
 
-            </button>
+  <main class="content">
 
-            <button
-                id="fast"
-                type="button"
-                onclick="setSpeed(70)">
+    <!-- ADVERTISEMENT -->
 
-                🚀 Fast
+    <div class="ad">
+      Advertisement
+    </div>
 
-            </button>
+    <!-- GAMES -->
 
-        </div>
+    <section id="games">
 
-        <!-- GAME CANVAS -->
+      <div class="section-head">
 
-        <canvas
-            id="game"
-            width="500"
-            height="500"
-            aria-label="Snake game board">
-        </canvas>
+        <h2>🔥 Popular Games</h2>
 
-        <!-- MESSAGE -->
+        <a href="#games">
+          View all →
+        </a>
 
-        <div
-            id="message"
-            role="status"
-            aria-live="polite">
+      </div>
 
-            Arrow Keys से Snake चलाओ
+      <div class="games">
 
-        </div>
+        <!-- SNAKE GAME -->
 
-        <!-- BUTTONS -->
+        <a
+          href="game.html"
+          class="game-card"
+          data-name="snake game arcade action"
+        >
+
+          <div class="game-image">
+            🐍🍎
+          </div>
+
+          <div class="game-info">
+
+            <div class="player-label">Player 1</div>
+
+            <h3>Snake Game</h3>
+
+            <p>
+              Classic snake game
+            </p>
+
+            <span class="game-status">Play Now</span>
+
+          </div>
+
+        </a>
+
+        <!-- TEKKEN 3 GAME -->
+        <a
+          href="#"
+          class="game-card"
+          data-name="tekken 3 fighting action arcade"
+          onclick="comingSoon(event)"
+        >
+
+          <div class="game-image">
+            <img
+              src="image/tekken3.png"
+              alt="Tekken 3 game"
+              style="width:100%;height:100%;object-fit:cover;display:block;"
+            >
+          </div>
+
+          <div class="game-info">
+
+            <div class="player-label">Player 1</div>
+
+            <h3>Tekken 3</h3>
+
+            <p>
+              Fighting action game
+            </p>
+
+            <span class="game-status">Coming Soon</span>
+
+          </div>
+
+        </a>
+
+        <!-- PUZZLE GAME -->
+
+        <a
+          href="#"
+          class="game-card"
+          data-name="puzzle game puzzle"
+          onclick="comingSoon(event)"
+        >
+
+          <div class="game-image">
+            🧩
+          </div>
+
+          <div class="game-info">
+
+            <div class="player-label">Player 1</div>
+
+            <h3>Puzzle Game</h3>
+
+            <p>
+              Mind and logic challenge
+            </p>
+
+            <span class="game-status">Coming Soon</span>
+
+          </div>
+
+        </a>
+
+        <!-- SPACE GAME -->
+
+        <a
+          href="#"
+          class="game-card"
+          data-name="space game adventure action"
+          onclick="comingSoon(event)"
+        >
+
+          <div class="game-image">
+            🚀
+          </div>
+
+          <div class="game-info">
+
+            <div class="player-label">Player 1</div>
+
+            <h3>Space Game</h3>
+
+            <p>
+              Explore the galaxy
+            </p>
+
+            <span class="game-status">Coming Soon</span>
+
+          </div>
+
+        </a>
+
+        <!-- RACING GAME -->
+
+        <a
+          href="#"
+          class="game-card"
+          data-name="racing game racing"
+          onclick="comingSoon(event)"
+        >
+
+          <div class="game-image">
+            🏎️
+          </div>
+
+          <div class="game-info">
+
+            <div class="player-label">Player 1</div>
+
+            <h3>Racing Game</h3>
+
+            <p>
+              Fast racing action
+            </p>
+
+            <span class="game-status">Coming Soon</span>
+
+          </div>
+
+        </a>
+
+      </div>
+
+    </section>
+
+    <!-- CATEGORIES -->
+
+    <section id="categories">
+
+      <div class="section-head">
+
+        <h2>🎮 Categories</h2>
+
+      </div>
+
+      <div class="categories">
 
         <button
-            class="main-btn"
-            type="button"
-            onclick="restartGame()">
-
-            🔄 Restart
-
+          class="category active"
+          onclick="filterGames('all', this)"
+        >
+          All
         </button>
 
-        <a href="index.html">
+        <button
+          class="category"
+          onclick="filterGames('action', this)"
+        >
+          Action
+        </button>
 
-            <button
-                class="main-btn"
-                type="button">
+        <button
+          class="category"
+          onclick="filterGames('arcade', this)"
+        >
+          Arcade
+        </button>
 
-                🏠 Home
+        <button
+          class="category"
+          onclick="filterGames('puzzle', this)"
+        >
+          Puzzle
+        </button>
 
-            </button>
+        <button
+          class="category"
+          onclick="filterGames('racing', this)"
+        >
+          Racing
+        </button>
 
-        </a>
+        <button
+          class="category"
+          onclick="filterGames('adventure', this)"
+        >
+          Adventure
+        </button>
 
-        <!-- MOBILE CONTROLS -->
+      </div>
 
-        <div class="controls">
+    </section>
 
-            <div class="control-row">
+    <!-- SECOND ADVERTISEMENT -->
 
-                <button
-                    class="control-btn"
-                    type="button"
-                    aria-label="Move Up"
-                    onclick="changeDirection('UP')">
+    <div class="ad">
+      Advertisement
+    </div>
 
-                    ⬆️
+  </main>
 
-                </button>
+  <!-- FOOTER -->
 
-            </div>
+  <footer id="about">
 
-            <div class="control-row">
+    <p>
+      <strong>Plix Games</strong> — Free online games.
+    </p>
 
-                <button
-                    class="control-btn"
-                    type="button"
-                    aria-label="Move Left"
-                    onclick="changeDirection('LEFT')">
+    <br>
 
-                    ⬅️
+    <p>
+      © 2026 Plix Games. All rights reserved.
+    </p>
 
-                </button>
+  </footer>
 
-                <button
-                    class="control-btn"
-                    type="button"
-                    aria-label="Move Down"
-                    onclick="changeDirection('DOWN')">
+  <!-- JAVASCRIPT -->
 
-                    ⬇️
+  <script>
 
-                </button>
+    // MOBILE MENU
 
-                <button
-                    class="control-btn"
-                    type="button"
-                    aria-label="Move Right"
-                    onclick="changeDirection('RIGHT')">
+    function toggleMenu() {
 
-                    ➡️
+      const menu = document.getElementById("mobileMenu");
+      const button = document.querySelector(".menu-btn");
 
-                </button>
+      menu.classList.toggle("show");
 
-            </div>
+      const isOpen = menu.classList.contains("show");
 
-        </div>
-
-    </main>
-
-    <!-- ================= RIGHT GAME RAIL ================= -->
-
-    <nav class="game-rail" aria-label="Other Games">
-
-        <a
-            class="other-game"
-            href="game1.html"
-            aria-label="Game 1"
-            title="Game 1">
-            🎮
-        </a>
-
-        <a
-            class="other-game"
-            href="game2.html"
-            aria-label="Game 2"
-            title="Game 2">
-            🕹️
-        </a>
-
-        <a
-            class="other-game"
-            href="game3.html"
-            aria-label="Game 3"
-            title="Game 3">
-            🚀
-        </a>
-
-        <a
-            class="other-game"
-            href="game4.html"
-            aria-label="Game 4"
-            title="Game 4">
-            🧩
-        </a>
-
-    </nav>
-
-    <!-- ================= RIGHT AD ================= -->
-
-    <!-- # GOOGLE ADS CODE HERE
-         Add Google AdSense code inside this area.
-    -->
-
-    <aside class="side-ad" aria-label="Advertisement">
-        Advertisement
-    </aside>
-
-</div>
-
-<!-- ================= JAVASCRIPT ================= -->
-
-<script>
-
-/* ================= CANVAS ================= */
-
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
-
-const box = 25;
-const boardSize = 500;
-const gridSize = boardSize / box;
-
-/* ================= GAME VARIABLES ================= */
-
-let snake = [];
-let apple = null;
-
-let direction = "RIGHT";
-let nextDirection = "RIGHT";
-
-let score = 0;
-
-let best = Number(
-    localStorage.getItem("snakeBest") || 0
-);
-
-let speed = 110;
-let gameLoop = null;
-let gameRunning = false;
-
-document.getElementById("best").textContent = best;
-
-/* ================= SOUND ================= */
-
-let audioContext = null;
-
-function startAudio() {
-
-    try {
-
-        if (!audioContext) {
-
-            const AudioContext =
-                window.AudioContext ||
-                window.webkitAudioContext;
-
-            if (!AudioContext) return;
-
-            audioContext = new AudioContext();
-
-        }
-
-        if (audioContext.state === "suspended") {
-
-            audioContext.resume().catch(() => {});
-
-        }
-
-    } catch (error) {
-
-        console.log("Audio unavailable");
+      button.setAttribute("aria-expanded", isOpen);
 
     }
 
-}
+    // SEARCH GAME
 
-function playTone(
-    frequency,
-    duration,
-    type = "sine"
-) {
+    function searchGame() {
 
-    if (!audioContext) return;
+      const input = document.getElementById("search");
 
-    try {
+      const value = input.value.toLowerCase().trim();
 
-        const oscillator =
-            audioContext.createOscillator();
+      if (!value) {
 
-        const gain =
-            audioContext.createGain();
+        alert("Please enter a game name.");
 
-        oscillator.type = type;
-        oscillator.frequency.value = frequency;
+        input.focus();
 
-        gain.gain.setValueAtTime(
-            0.12,
-            audioContext.currentTime
-        );
+        return;
 
-        gain.gain.exponentialRampToValueAtTime(
-            0.001,
-            audioContext.currentTime + duration
-        );
+      }
 
-        oscillator.connect(gain);
-        gain.connect(audioContext.destination);
+      if (value.includes("snake")) {
 
-        oscillator.start();
+        window.location.href = "game.html";
 
-        oscillator.stop(
-            audioContext.currentTime + duration
-        );
+      } else {
 
-    } catch (error) {
+        alert("This game is not available yet.");
 
-        console.log("Sound error");
+      }
 
     }
 
-}
-
-function appleSound() {
-
-    playTone(600, 0.08);
-
-    setTimeout(() => {
-
-        playTone(850, 0.10);
-
-    }, 80);
-
-}
-
-function gameOverSound() {
-
-    playTone(350, 0.15, "square");
-
-    setTimeout(() => {
-
-        playTone(220, 0.25, "square");
-
-    }, 150);
-
-}
-
-function bestSound() {
-
-    playTone(600, 0.10);
-
-    setTimeout(() => {
-
-        playTone(800, 0.10);
-
-    }, 100);
-
-    setTimeout(() => {
-
-        playTone(1000, 0.18);
-
-    }, 200);
-
-}
-
-/* ================= SPEED ================= */
-
-function setSpeed(newSpeed) {
-
-    speed = newSpeed;
+    // ENTER KEY SEARCH
 
     document
-        .querySelectorAll(".speed button")
-        .forEach(button => {
+      .getElementById("search")
+      .addEventListener("keydown", function(e) {
 
-            button.classList.remove("active");
+        if (e.key === "Enter") {
+
+          searchGame();
+
+        }
+
+      });
+
+    // COMING SOON
+
+    function comingSoon(e) {
+
+      e.preventDefault();
+
+      alert("This game is coming soon!");
+
+    }
+
+    // FILTER GAMES
+
+    function filterGames(type, button) {
+
+      document
+        .querySelectorAll(".category")
+        .forEach(item => {
+
+          item.classList.remove("active");
 
         });
 
-    if (newSpeed === 170) {
+      button.classList.add("active");
 
-        document
-            .getElementById("slow")
-            .classList.add("active");
+      document
+        .querySelectorAll(".game-card")
+        .forEach(card => {
 
-    }
+          const name = card.dataset.name || "";
 
-    if (newSpeed === 110) {
+          if (
+            type === "all" ||
+            name.includes(type)
+          ) {
 
-        document
-            .getElementById("medium")
-            .classList.add("active");
+            card.style.display = "block";
 
-    }
+          } else {
 
-    if (newSpeed === 70) {
+            card.style.display = "none";
 
-        document
-            .getElementById("fast")
-            .classList.add("active");
+          }
 
-    }
-
-    if (gameRunning) {
-
-        clearInterval(gameLoop);
-
-        gameLoop = setInterval(drawGame, speed);
+        });
 
     }
 
-}
-
-/* ================= START GAME ================= */
-
-function startGame() {
-
-    clearInterval(gameLoop);
-
-    snake = [
-
-        {x: 250, y: 250},
-        {x: 225, y: 250},
-        {x: 200, y: 250},
-        {x: 175, y: 250}
-
-    ];
-
-    direction = "RIGHT";
-    nextDirection = "RIGHT";
-
-    score = 0;
-
-    document
-        .getElementById("score")
-        .textContent = score;
-
-    document
-        .getElementById("message")
-        .textContent =
-        "Arrow Keys से Snake चलाओ";
-
-    gameRunning = true;
-
-    createApple();
-
-    drawBoard();
-    drawApple();
-    drawSnake();
-
-    gameLoop = setInterval(drawGame, speed);
-
-}
-
-/* ================= DRAW BOARD ================= */
-
-function drawBoard() {
-
-    ctx.fillStyle = "#f8fbff";
-
-    ctx.fillRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-    ctx.strokeStyle = "#e1ebf5";
-    ctx.lineWidth = 1;
-
-    for (
-        let x = 0;
-        x <= boardSize;
-        x += box
-    ) {
-
-        ctx.beginPath();
-
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, boardSize);
-
-        ctx.stroke();
-
-    }
-
-    for (
-        let y = 0;
-        y <= boardSize;
-        y += box
-    ) {
-
-        ctx.beginPath();
-
-        ctx.moveTo(0, y);
-        ctx.lineTo(boardSize, y);
-
-        ctx.stroke();
-
-    }
-
-}
-
-/* ================= DRAW GAME ================= */
-
-function drawGame() {
-
-    if (!gameRunning) return;
-
-    direction = nextDirection;
-
-    let head = {
-
-        x: snake[0].x,
-        y: snake[0].y
-
-    };
-
-    if (direction === "LEFT") {
-        head.x -= box;
-    }
-
-    if (direction === "RIGHT") {
-        head.x += box;
-    }
-
-    if (direction === "UP") {
-        head.y -= box;
-    }
-
-    if (direction === "DOWN") {
-        head.y += box;
-    }
-
-    /* WALL COLLISION */
-
-    if (
-
-        head.x < 0 ||
-        head.y < 0 ||
-        head.x >= boardSize ||
-        head.y >= boardSize
-
-    ) {
-
-        gameOver();
-        return;
-
-    }
-
-    /* APPLE CHECK */
-
-    const eatingApple =
-        head.x === apple.x &&
-        head.y === apple.y;
-
-    /* SELF COLLISION */
-
-    const bodyToCheck = eatingApple
-        ? snake
-        : snake.slice(0, -1);
-
-    for (let part of bodyToCheck) {
-
-        if (
-
-            head.x === part.x &&
-            head.y === part.y
-
-        ) {
-
-            gameOver();
-            return;
-
-        }
-
-    }
-
-    /* ADD NEW HEAD */
-
-    snake.unshift(head);
-
-    /* APPLE */
-
-    if (eatingApple) {
-
-        score++;
-
-        document
-            .getElementById("score")
-            .textContent = score;
-
-        appleSound();
-
-        if (score > best) {
-
-            best = score;
-
-            document
-                .getElementById("best")
-                .textContent = best;
-
-            localStorage.setItem(
-                "snakeBest",
-                best
-            );
-
-            bestSound();
-
-        }
-
-        createApple();
-
-    } else {
-
-        snake.pop();
-
-    }
-
-    drawBoard();
-    drawApple();
-    drawSnake();
-
-}
-
-/* ================= DRAW SNAKE ================= */
-
-function drawSnake() {
-
-    for (
-        let i = snake.length - 1;
-        i >= 0;
-        i--
-    ) {
-
-        const part = snake[i];
-
-        if (i === 0) {
-
-            ctx.fillStyle = "#39d353";
-
-        } else {
-
-            ctx.fillStyle = "#159447";
-
-        }
-
-        ctx.fillRect(
-            part.x,
-            part.y,
-            box,
-            box
-        );
-
-        if (i === 0) {
-
-            drawSnakeFace(
-                part.x,
-                part.y
-            );
-
-        }
-
-    }
-
-}
-
-/* ================= SNAKE FACE ================= */
-
-function drawSnakeFace(x, y) {
-
-    ctx.fillStyle = "#111";
-
-    let eye1;
-    let eye2;
-
-    if (direction === "RIGHT") {
-
-        eye1 = {
-            x: x + 17,
-            y: y + 7
-        };
-
-        eye2 = {
-            x: x + 17,
-            y: y + 17
-        };
-
-    } else if (direction === "LEFT") {
-
-        eye1 = {
-            x: x + 7,
-            y: y + 7
-        };
-
-        eye2 = {
-            x: x + 7,
-            y: y + 17
-        };
-
-    } else if (direction === "UP") {
-
-        eye1 = {
-            x: x + 7,
-            y: y + 7
-        };
-
-        eye2 = {
-            x: x + 17,
-            y: y + 7
-        };
-
-    } else {
-
-        eye1 = {
-            x: x + 7,
-            y: y + 17
-        };
-
-        eye2 = {
-            x: x + 17,
-            y: y + 17
-        };
-
-    }
-
-    ctx.beginPath();
-
-    ctx.arc(
-        eye1.x,
-        eye1.y,
-        3,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-
-    ctx.beginPath();
-
-    ctx.arc(
-        eye2.x,
-        eye2.y,
-        3,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-
-}
-
-/* ================= APPLE ================= */
-
-function drawApple() {
-
-    if (!apple) return;
-
-    ctx.fillStyle = "#ef3030";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        apple.x + 12,
-        apple.y + 13,
-        9,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-
-    ctx.fillStyle = "#159447";
-
-    ctx.beginPath();
-
-    ctx.ellipse(
-        apple.x + 18,
-        apple.y + 4,
-        6,
-        3,
-        -0.5,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-
-}
-
-/* ================= CREATE APPLE ================= */
-
-function createApple() {
-
-    let valid = false;
-    let attempts = 0;
-
-    while (!valid && attempts < 500) {
-
-        attempts++;
-
-        apple = {
-
-            x:
-                Math.floor(
-                    Math.random() * gridSize
-                ) * box,
-
-            y:
-                Math.floor(
-                    Math.random() * gridSize
-                ) * box
-
-        };
-
-        valid = true;
-
-        for (let part of snake) {
-
-            if (
-
-                apple.x === part.x &&
-                apple.y === part.y
-
-            ) {
-
-                valid = false;
-                break;
-
-            }
-
-        }
-
-    }
-
-}
-
-/* ================= GAME OVER ================= */
-
-function gameOver() {
-
-    gameRunning = false;
-
-    clearInterval(gameLoop);
-    gameLoop = null;
-
-    gameOverSound();
-
-    document
-        .getElementById("message")
-        .textContent =
-        "💥 Game Over! Score: " + score;
-
-}
-
-/* ================= RESTART ================= */
-
-function restartGame() {
-
-    startAudio();
-    startGame();
-
-}
-
-/* ================= DIRECTION ================= */
-
-function changeDirection(newDirection) {
-
-    startAudio();
-
-    if (
-        newDirection === "LEFT" &&
-        direction !== "RIGHT"
-    ) {
-
-        nextDirection = "LEFT";
-
-    }
-
-    if (
-        newDirection === "RIGHT" &&
-        direction !== "LEFT"
-    ) {
-
-        nextDirection = "RIGHT";
-
-    }
-
-    if (
-        newDirection === "UP" &&
-        direction !== "DOWN"
-    ) {
-
-        nextDirection = "UP";
-
-    }
-
-    if (
-        newDirection === "DOWN" &&
-        direction !== "UP"
-    ) {
-
-        nextDirection = "DOWN";
-
-    }
-
-}
-
-/* ================= KEYBOARD ================= */
-
-document.addEventListener(
-    "keydown",
-    function(event) {
-
-        if (event.key === "ArrowLeft") {
-
-            changeDirection("LEFT");
-            event.preventDefault();
-
-        }
-
-        if (event.key === "ArrowRight") {
-
-            changeDirection("RIGHT");
-            event.preventDefault();
-
-        }
-
-        if (event.key === "ArrowUp") {
-
-            changeDirection("UP");
-            event.preventDefault();
-
-        }
-
-        if (event.key === "ArrowDown") {
-
-            changeDirection("DOWN");
-            event.preventDefault();
-
-        }
-
-    }
-);
-
-/* ================= DEFAULT ================= */
-
-setSpeed(110);
-startGame();
-
-</script>
+  </script>
 
 </body>
 </html>
